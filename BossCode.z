@@ -1,0 +1,71 @@
+class BossCode : ZilchComponent
+{
+    [Property]
+    var Pose1 : SpriteSource = null;
+    [Property]
+    var Pose2 : SpriteSource = null;
+    [Property]
+    var Pose3 : SpriteSource = null;
+    [Property]
+    var BossHP : Integer = 30;
+    var BossTimerLoop : Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == "bullet3")
+        {
+            this.BossHP -= 1;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        Console.WriteLine(this.BossHP);
+        if (this.BossHP <= 0)
+        {
+            this.Owner.Destroy();
+        }
+        this.BossTimerLoop += 1;
+        
+        //First fireball attack
+        if (this.BossTimerLoop <= 60)
+        {
+            this.Owner.Sprite.SpriteSource = (this.Pose2);
+            var fireSpam = Archetype.Find ("fireSpam");
+            var spawnPosition = Real3(14.4, 9.2, 0);
+            var spawnedFireSpam = this.Space.CreateAtPosition(fireSpam, spawnPosition);
+            spawnedFireSpam.RigidBody.Velocity = Real3(-20,0,0);
+        }
+        else if (this.BossTimerLoop <= 150)
+        {
+            this.Owner.Sprite.SpriteSource = (this.Pose1);
+        }
+        else if (this.BossTimerLoop <= 151)
+        {
+            this.Owner.Sprite.SpriteSource = (this.Pose3);
+            var fireballLOW = Archetype.Find("FireballLOW");
+            var spawnPosition = Real3 (14.4, 9.2, 0);
+            var spawnedFireballLOW = this.Space.CreateAtPosition(fireballLOW, spawnPosition);
+            spawnedFireballLOW.RigidBody.Velocity = Real3(-3, -10, 0);
+        }
+        else if (this.BossTimerLoop <= 200)
+        {
+        }
+        else if (this.BossTimerLoop <= 400)
+        {
+            this.Owner.Sprite.SpriteSource = this.Pose1;
+        }
+        else if (this.BossTimerLoop <= 600)
+        {
+            var lazer1 = Archetype.Find("lazer1");
+            var spawnPos = Real3(18,14, 0);
+            var spawnedLazer = this.Space.CreateAtPosition(lazer1, spawnPos);
+            spawnedLazer.RigidBody.Velocity = Real3 (-20, -0.5, 0);
+        }
+    }
+}

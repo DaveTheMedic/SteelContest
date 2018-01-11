@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "followcamera",
+	uint64 LibraryId = 53de9c02c63b383b,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

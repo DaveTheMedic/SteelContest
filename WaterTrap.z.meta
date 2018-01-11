@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "WaterTrap",
+		uint64 ResourceId = 53a80cf7e4b6f695,
+	},
+},

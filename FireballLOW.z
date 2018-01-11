@@ -1,0 +1,26 @@
+class FireballLOW : ZilchComponent
+{
+    var FireballLOWTIMER : Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var fireSpam = Archetype.Find("fireSpam");
+        var spawnPos = this.Owner.Transform.Translation;
+        var spawnedFireSpam = this.Space.CreateAtPosition(fireSpam, spawnPos);
+        spawnedFireSpam.RigidBody.Velocity = Real3(-12,0,0);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.FireballLOWTIMER +=1;
+        if (this.FireballLOWTIMER >= 120)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CoopP2LivesCounter",
+		uint64 ResourceId = 53a93c1b8bae9d65,
+	},
+},

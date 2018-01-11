@@ -1,0 +1,31 @@
+class Player1LivesCounter : ZilchComponent
+{
+    var Player1Lives : Integer = 3;
+    [Property]
+    var Player1FULLHP : SpriteSource = null;
+    [Property]
+    var Player1TWOHP : SpriteSource = null;
+    [Property]
+    var Player1ONEHP : SpriteSource = null;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Space.FindObjectByName("player").PlayerController.Player1Lives == 3)
+        {
+            this.Owner.Sprite.SpriteSource = this.Player1FULLHP;
+        }
+        if (this.Space.FindObjectByName("player").PlayerController.Player1Lives == 2)
+        {
+            this.Owner.Sprite.SpriteSource = this.Player1TWOHP;
+        }
+        if (this.Space.FindObjectByName("player").PlayerController.Player1Lives == 1)
+        {
+            this.Owner.Sprite.SpriteSource = this.Player1ONEHP;
+        }
+    }
+}

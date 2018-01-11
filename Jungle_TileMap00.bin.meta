@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "Jungle_TileMap00",
+		uint64 ResourceId = 53a804f6606dcede,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "53a86716e979c927:Jungle",
+	},
+},

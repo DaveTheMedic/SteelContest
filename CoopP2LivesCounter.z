@@ -1,0 +1,31 @@
+class CoopP2LivesCounter : ZilchComponent
+{
+    [Property]
+    var Player2FULLHP : SpriteSource = null;
+    [Property]
+    var Player2TWOHP : SpriteSource = null;
+    [Property]
+    var Player2ONEHP : SpriteSource = null;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+
+        if (this.Space.FindObjectByName("player2").CoopPlayer2Controller.Player2Lives == 3)
+        {
+            this.Owner.Sprite.SpriteSource = this.Player2FULLHP;
+        }
+        if (this.Space.FindObjectByName("player2").CoopPlayer2Controller.Player2Lives == 2)
+        {
+            this.Owner.Sprite.SpriteSource = this.Player2TWOHP;
+        }
+        if (this.Space.FindObjectByName("player2").CoopPlayer2Controller.Player2Lives == 1)
+        {
+            this.Owner.Sprite.SpriteSource = this.Player2ONEHP;
+        }
+    }
+}

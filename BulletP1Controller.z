@@ -1,0 +1,32 @@
+class BulletController : ZilchComponent
+{
+    [Property]
+    var BulletTimeout : Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == "player2")
+        {
+            this.Owner.Destroy();
+        }
+        if(event.OtherObject.Name == "shieldP2")
+        {
+            this.Owner.Destroy();
+        }
+
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.BulletTimeout += 1;
+        if (this.BulletTimeout >= 180)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

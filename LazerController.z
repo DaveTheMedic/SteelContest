@@ -1,0 +1,17 @@
+class LazerController : ZilchComponent
+{
+    var LazerDestroyTimer : Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.LazerDestroyTimer += 1;
+        if (this.LazerDestroyTimer >= 100)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

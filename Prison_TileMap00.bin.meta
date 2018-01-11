@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "Prison_TileMap00",
+		uint64 ResourceId = 53a87b7f84c1487d,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "53de9c02c63b5248:Prison",
+	},
+},

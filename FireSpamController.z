@@ -1,0 +1,30 @@
+class FireSpamController : ZilchComponent
+{
+    var DestroyTimer : Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        //if(event.OtherObject.Name == "TileMap")
+        //{
+        //this.Owner.Destroy();
+        //}
+
+
+
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.DestroyTimer += 1;
+        Console.WriteLine(this.DestroyTimer);
+        if (this.DestroyTimer >= 120)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

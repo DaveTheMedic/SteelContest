@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CoopSelect",
+		uint64 ResourceId = 53a9383db78bab19,
+	},
+},

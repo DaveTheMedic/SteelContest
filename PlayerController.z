@@ -1,0 +1,265 @@
+class PlayerController : ZilchComponent
+{
+    [Property]
+    var Player1Timer : Real = 0;
+    
+    [Property]
+    var Offset : Real = -2.0;
+    
+    [Property]
+    var ShieldOffset : Real = -1.0;
+    
+    [Property]
+    var PlayerStand : SpriteSource = null;
+    
+    [Property]
+    var PlayerWalk : SpriteSource = null;
+    
+    [Property]
+    var PlayerJump : SpriteSource = null;
+    
+    [Property]
+    var BulletSpeed : Real = 1;
+    
+    [Property]
+    var Player1ShieldTimer : Real = 0;
+    
+    [Property]
+    var CamTimer : Real = 0;
+    
+    var BulletHit : Boolean = false;
+    
+    [Property]
+    var Player1Lives : Integer = 3;
+    
+    [Property]
+    var Player1HeartsFULL : SpriteSource = null;
+    
+    [Property]
+    var Player1HeartsTWO : SpriteSource = null;
+    
+    [Property]
+    var Player1HeartsONE : SpriteSource = null;
+    
+    var OtherPlayerPos : Real3 = Real3(-13.5, 3.7,0);
+    
+    var StartWinTimer : Boolean = false;
+    
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == "Water")
+        {
+            this.Player1Lives -= 1;
+            var player = this.Space.FindObjectByName("player2");
+            this.Owner.Transform.Translation = Real3(34.4,3.7,0);
+            player.Transform.Translation = this.OtherPlayerPos;
+        }
+        if(event.OtherObject.Name == "bullet2")
+        {
+            var playerTwo = this.Space.FindObjectByName("player2");
+            this.Owner.Transform.Translation = Real3(34.4,3.7,0);
+            playerTwo.Transform.Translation = Real3(-13.5, 3.7,0);
+
+            this.BulletHit = true;
+            
+            this.Player1Lives -= 1;
+
+
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        
+        if (this.Player1Lives <= 0)
+        {
+            var camera = this.Space.FindObjectByName("Camera");
+            //Console.WriteLine("player1 is ded!");
+            var zoomPlayer2 = this.Space.FindObjectByName("player2");
+            camera.Camera.Size = (10);
+            camera.Transform.Translation = Real3(this.OtherPlayerPos.X, this.OtherPlayerPos.Y, this.OtherPlayerPos.Z + 40);
+            this.StartWinTimer = true;
+        }
+        if (this.StartWinTimer == true)
+        {
+            var endTimer : Real = 0;
+            endTimer += 1;
+            if (endTimer == 120)
+            {
+                this.Space.LoadLevel(Level.Find("Player2Win"));
+            }
+        }
+        //camera zoom timer
+        if(this.BulletHit == true)
+        {
+            var camera = this.Space.FindObjectByName("Camera");
+            camera.Camera.Size = (39);
+            
+            
+            var targetRotation =  camera.Orientation.GetLookAtPointRotation(Real3(0, 0, 0));
+            var currentRotation = camera.Transform.Rotation;
+            var partialRotation = Math.RotateTowards(currentRotation, targetRotation, Math.ToRadians(100) * event.Dt);
+          //  camera.Transform.Rotation = partialRotation;
+            
+            this.CamTimer += 1;
+            if(this.CamTimer == 10)
+            {
+                camera.Camera.Size = (40);
+             
+                this.BulletHit = false;
+                this.CamTimer = 0;
+                
+                
+                
+             targetRotation =  camera.Orientation.GetLookAtPointRotation(Real3(0, 1, 0));
+             currentRotation = camera.Transform.Rotation;
+            //partialRotation = Math.RotateTowards(currentRotation, targetRotation, Math.ToRadians(100) * event.Dt);
+            //camera. Transform.Rotation = partialRotation;
+            }
+        }
+        
+        //The shield timer
+        var shieldPlayer1 = this.Space.FindObjectByName("ShieldPlayer1");
+        this.Player1ShieldTimer += 1;
+        if (this.Player1ShieldTimer <= 80)
+        {
+            shieldPlayer1.Transform.Scale += Real3(0.0025,0,0);
+        }
+        if (this.Player1ShieldTimer >= 80)
+        {
+            shieldPlayer1.Transform.Scale = Real3(0.2,0.2,1);
+            if (Zero.Keyboard.KeyIsPressed(Keys.NumPad2))
+            {
+                shieldPlayer1.Transform.Scale = Real3(0,0.2,1);
+                var shieldP1 = Archetype.Find("shieldP1");
+                var spawnPosition = this.Owner.Transform.Translation;
+                if(this.Owner.Sprite.FlipX == true)
+                {
+                    spawnPosition.X += this.ShieldOffset;
+                    var spawnedShield = this.Space.CreateAtPosition(shieldP1, spawnPosition);
+                    spawnedShield.AttachToRelative(this.Owner);
+                    this.Player1ShieldTimer = 0;
+                }
+                else
+                {
+                spawnPosition.X -= this.ShieldOffset;
+                var spawnedShield = this.Space.CreateAtPosition(shieldP1, spawnPosition);
+                spawnedShield.AttachToRelative(this.Owner);
+                this.Player1ShieldTimer = 0;
+                }
+            }
+        }
+        
+        
+        //The timer for shooting
+        this.Player1Timer += 1;
+        var ammoPlayer1 = this.Space.FindObjectByName ("AmmoPlayer1");
+        if (this.Player1Timer <= 90)
+        {
+            ammoPlayer1.Transform.Scale += Real3(0.002222222222222222, 0, 0);
+        }
+        if (this.Player1Timer >= 90)
+        {
+            if(Zero.Keyboard.KeyIsPressed(Keys.NumPad1))
+            {
+                this.Player1Timer = 0;
+                ammoPlayer1.Transform.Scale = Real3(0,0.2,1);
+                var bullet = Archetype.Find("bullet");
+                var spawnPosition = this.Owner.Transform.Translation;
+                if (this.Owner.Sprite.FlipX == true)
+                    {
+                    spawnPosition.X += this.Offset;
+                    var spawnedBullet = this.Space.CreateAtPosition(bullet, spawnPosition);
+                    spawnedBullet.RigidBody.Velocity = Real3(-1,0,0) * this.BulletSpeed;
+                    }
+                else
+                {
+                spawnPosition.X -= this.Offset;
+                var spawnedBullet = this.Space.CreateAtPosition(bullet, spawnPosition);
+                spawnedBullet.RigidBody.Velocity = Real3(1,0,0) * this.BulletSpeed;
+                }
+            }
+        }
+        
+        
+        //Movement
+        var movement = Real3(0,0,0);
+        
+        if (Zero.Keyboard.KeyIsDown(Keys.Right)) //take note of movement.X. X makes it only apply to x axis!! :D
+        {
+            movement.X += 5.0;
+            //flipping and changing sprite
+            this.Owner.Sprite.FlipX = false;
+        }
+        if (Zero.Keyboard.KeyIsDown(Keys.Left))
+        {
+            movement.X -= 5.0;
+            this.Owner.Sprite.FlipX = true;
+            
+        }
+        if(Zero.Keyboard.KeyIsPressed(Keys.Up))
+        {
+            this.Owner.SweptController.Jump();
+        }
+        //letting go of up key
+        if(Zero.Keyboard.KeyIsDown(Keys.Up) == false)
+        {
+            if(this.Owner.SweptController.Jumping) //jumping is a var. This checks if player is in air.
+            {
+                //JumpCancel is a function that takes no parameters, but we still call it with JumpCancel().
+                this.Owner.SweptController.JumpCancel();
+            }
+        }
+        
+        this.Owner.SweptController.Update(movement, event.Dt);
+        
+        
+        
+        
+        if(this.Owner.Sprite.SpriteSource == this.PlayerStand)
+        {
+            if(Zero.Keyboard.KeyIsDown(Keys.Left) || Zero.Keyboard.KeyIsDown(Keys.Right))
+            {
+                //go to walking
+
+                this.Owner.Sprite.SpriteSource = this.PlayerWalk;
+            }
+            if(Zero.Keyboard.KeyIsDown(Keys.Up))
+            {
+                //go to jumping
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+
+            }
+        }
+                
+        if(this.Owner.Sprite.SpriteSource == this.PlayerWalk)
+        {
+            // && means the oposite of ||. && means nor. NOt one or the other
+            if(Zero.Keyboard.KeyIsDown(Keys.Left) == false && Zero.Keyboard.KeyIsDown(Keys.Right) == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerStand;
+            }
+            if(Zero.Keyboard.KeyIsDown(Keys.Up))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+        }
+                
+        if(this.Owner.Sprite.SpriteSource == this.PlayerJump)
+        {
+            if(this.Owner.SweptController.Grounded)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerStand;
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "Coop_Boss_TileMap02",
+		uint64 ResourceId = 53a81f2e42fdffb4,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "53a8041c69b6c69d:Coop_Boss",
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FireSpamController",
+		uint64 ResourceId = 53a82891381cc72c,
+	},
+},

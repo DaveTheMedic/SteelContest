@@ -1,0 +1,20 @@
+class Shield2Controller : ZilchComponent
+{
+    [Property]
+    var Player2ShieldDestroyTimer : Real = 0;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+
+        this.Player2ShieldDestroyTimer += 1;
+        if (this.Player2ShieldDestroyTimer >= 50)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

@@ -1,0 +1,17 @@
+class CoopSelect : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        this.Space.LoadLevel(Level.Find("Coop_Boss"));
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}
